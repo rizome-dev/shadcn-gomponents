@@ -1,0 +1,136 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.4'
+          
+      - name: Validate tag
+        run: |
+          if ! [[ "${{ github.ref_name }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]]; then
+            echo "Invalid tag format. Expected format: vX.Y.Z or vX.Y.Z-suffix"
+            exit 1
+          fi
+          
+      - name: Build release artifacts
+        run: |
+          make clean
+          make vendor
+          
+          # Build shared libraries
+          just build-all
+          
+          # Create checksums
+          cd build
+          sha256sum * > checksums.txt
+          cd ..
+          
+      - name: Create release archive
+        run: |
+          VERSION=${{ github.ref_name }}
+          mkdir -p release
+          
+          # Archive each platform separately
+          tar -czf release/tmpl-${VERSION}-darwin-arm64.tar.gz -C build signer-arm64.dylib
+          tar -czf release/tmpl-${VERSION}-linux-amd64.tar.gz -C build signer-amd64.so
+          
+          # Create source archive
+          git archive --format=tar.gz --prefix=tmpl-${VERSION}/ -o release/tmpl-${VERSION}-source.tar.gz HEAD
+          
+          # Copy checksums
+          cp build/checksums.txt release/
+          
+      - name: Generate changelog
+        id: changelog
+        run: |
+          echo "## What's Changed" > changelog.md
+          echo "" >> changelog.md
+          
+          # Get commits since last tag
+          LAST_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            git log --pretty=format:"* %s (%h)" >> changelog.md
+          else
+            git log ${LAST_TAG}..HEAD --pretty=format:"* %s (%h)" >> changelog.md
+          fi
+          
+          echo "" >> changelog.md
+          echo "" >> changelog.md
+          echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/${LAST_TAG}...${{ github.ref_name }}" >> changelog.md
+          
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: changelog.md
+          files: |
+            release/*.tar.gz
+            release/checksums.txt
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          
+  build-binaries:
+    name: Build Cross-Platform Binaries
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+          - goos: darwin
+            goarch: amd64
+          - goos: darwin
+            goarch: arm64
+          - goos: windows
+            goarch: amd64
+    steps:
+      - uses: actions/checkout@v4
+        
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.4'
+          
+      - name: Build shared library
+        env:
+          CGO_ENABLED: 1
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          # Skip Windows shared library builds (not supported)
+          if [ "${{ matrix.goos }}" != "windows" ]; then
+            make vendor
+            
+            OUTPUT_EXT="so"
+            if [ "${{ matrix.goos }}" = "darwin" ]; then
+              OUTPUT_EXT="dylib"
+            fi
+            
+            mkdir -p build
+            go build -buildmode=c-shared -trimpath -ldflags="-s -w" \
+              -o build/signer-${{ matrix.goarch }}.${OUTPUT_EXT} \
+              ./sharedlib/sharedlib.go || echo "Build failed for ${{ matrix.goos }}/${{ matrix.goarch }}"
+          fi
+          
+      - name: Upload artifacts
+        if: matrix.goos != 'windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sharedlib-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: build/*

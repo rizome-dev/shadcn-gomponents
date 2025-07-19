@@ -1,0 +1,168 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  GO_VERSION: '1.23.4'
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          
+      - name: Install golangci-lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.61.0
+          
+      - name: Run golangci-lint
+        run: golangci-lint run ./...
+
+  test:
+    name: Test
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        go: ['1.22', '1.23.4']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+          
+      - name: Run tests
+        run: |
+          go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+          
+      - name: Upload coverage
+        if: matrix.os == 'ubuntu-latest' && matrix.go == env.GO_VERSION
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.out
+          fail_ci_if_error: false
+
+  build-sharedlib:
+    name: Build Shared Libraries
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux-amd64
+            output: signer-amd64.so
+          - os: macos-latest
+            target: darwin-arm64
+            output: signer-arm64.dylib
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          
+      - name: Vendor dependencies
+        run: |
+          go mod download
+          go mod vendor
+          
+      - name: Build shared library
+        run: |
+          mkdir -p build
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -buildmode=c-shared -trimpath -ldflags="-s -w" -o build/${{ matrix.output }} ./sharedlib/sharedlib.go
+          else
+            CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -buildmode=c-shared -trimpath -ldflags="-s -w" -o build/${{ matrix.output }} ./sharedlib/sharedlib.go
+          fi
+          
+      - name: Verify shared library
+        run: |
+          ls -la build/
+          file build/${{ matrix.output }}
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sharedlib-${{ matrix.target }}
+          path: build/${{ matrix.output }}
+
+  e2e-test:
+    name: End-to-End Test
+    needs: build-sharedlib
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          
+      - name: Download Linux shared library
+        uses: actions/download-artifact@v4
+        with:
+          name: sharedlib-linux-amd64
+          path: build/
+          
+      - name: Run E2E tests
+        run: |
+          chmod +x scripts/e2e-test.sh
+          ./scripts/e2e-test.sh
+          
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          
+      - name: Run gosec
+        run: |
+          go install github.com/securego/gosec/v2/cmd/gosec@latest
+          gosec -fmt=json -out=security-report.json ./... || true
+          
+      - name: Upload security report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: security-report.json
+          
+  build-cross-platform:
+    name: Cross-Platform Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          
+      - name: Build for multiple platforms
+        run: |
+          make build-cross || echo "No main binary to build"
+          
+  docker-build:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        
+      - name: Test Docker build
+        run: |
+          if [ -f Dockerfile ]; then
+            docker build -t tmpl:test .
+          else
+            echo "No Dockerfile found, skipping Docker build"
+          fi
