@@ -1,3 +1,5 @@
+.claude/
+.mcp.json
 # If you prefer the allow list template instead of the deny list, see community template:
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 
@@ -77,14 +79,9 @@ ehthumbs.db
 Thumbs.db
 desktop.ini
 
-# Project specific binaries
-/tmpl
-/tmpl_*
-tmpl-*
-
-# Shared library build artifacts
-*.h
-!sharedlib/*.h
+# Project specific
+/examples/demo/demo
+/public/styles/app.css
 
 # Test artifacts
 test-e2e/
@@ -112,3 +109,8 @@ site/
 # Local notes
 .notes/
 TODO.md.local
+/cover.out
+/node_modules/
+/package.json
+/public/styles/app.css
+/tailwindcss
