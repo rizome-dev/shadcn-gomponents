@@ -26,7 +26,7 @@ This demo application showcases all 47 components available in the Shadcn Gompon
 ## Available Routes
 
 - `/` - Home page with feature overview
-- `/components/` - Complete component gallery
+- `/pkg/` - Complete component gallery
 - `/[component-name]` - Individual component demo pages
 
 ## Components Included

@@ -28,10 +28,10 @@ import (
     g "maragu.dev/gomponents"
     . "maragu.dev/gomponents/html"
     
-    "github.com/rizome-dev/shadcn-gomponents/components/alert"
-    "github.com/rizome-dev/shadcn-gomponents/components/button"
-    "github.com/rizome-dev/shadcn-gomponents/components/card"
-    "github.com/rizome-dev/shadcn-gomponents/components/badge"
+    "github.com/rizome-dev/shadcn-gomponents/pkg/alert"
+    "github.com/rizome-dev/shadcn-gomponents/pkg/button"
+    "github.com/rizome-dev/shadcn-gomponents/pkg/card"
+    "github.com/rizome-dev/shadcn-gomponents/pkg/badge"
 )
 
 func main() {
