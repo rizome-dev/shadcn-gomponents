@@ -81,7 +81,7 @@ func Example() g.Node {
 					Item(ItemProps{}, g.Text("New Window")),
 					Item(ItemProps{}, g.Text("New Private Window")),
 					Separator(SeparatorProps{}),
-					Sub(
+					SubMenu(
 						SubProps{},
 						SubTrigger(SubTriggerProps{}, g.Text("Share")),
 						SubContent(
@@ -91,7 +91,7 @@ func Example() g.Node {
 							Item(ItemProps{}, g.Text("Notes")),
 						),
 					),
-					Sub(
+					SubMenu(
 						SubProps{},
 						SubTrigger(SubTriggerProps{}, g.Text("More Tools")),
 						SubContent(

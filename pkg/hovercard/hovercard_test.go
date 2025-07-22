@@ -10,7 +10,10 @@ import (
 
 func renderToString(node g.Node) string {
 	var buf strings.Builder
-	node.Render(&buf)
+	err := node.Render(&buf)
+	if err != nil {
+		panic(err) // For tests, panic on render error
+	}
 	return buf.String()
 }
 
@@ -118,7 +121,7 @@ func TestContent(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := renderToString(Content(tt.props, g.Text("Content")))
+			got := renderToString(ContentComponent(tt.props, g.Text("Content")))
 			for _, want := range tt.want {
 				if !strings.Contains(got, want) {
 					t.Errorf("Content() missing: %v", want)
@@ -224,7 +227,7 @@ func TestCompleteHoverCard(t *testing.T) {
 				g.Text("Hover for info"),
 			),
 		),
-		Content(
+		ContentComponent(
 			ContentProps{Side: "top", Align: "start"},
 			Div(Class("space-y-2"),
 				H4(Class("font-semibold"), g.Text("Information")),

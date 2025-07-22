@@ -93,7 +93,7 @@ func SearchInputHTMX(id string, cfg *config, htmxCfg HTMXConfig) g.Node {
 			// HTMX attributes
 			hx.Get(htmxCfg.SearchEndpoint),
 			hx.Trigger(fmt.Sprintf("keyup changed delay:%dms", htmxCfg.DebounceMs)),
-			html.Target("#"+id+"-list"),
+			hx.Target("#"+id+"-list"),
 			hx.Swap("innerHTML"),
 			hx.Include("#"+id+"-input"),
 			hx.Indicator("#"+id+"-loading"),

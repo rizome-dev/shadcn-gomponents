@@ -21,6 +21,7 @@ type Props struct {
 	Collapsible string // "offcanvas" | "icon" | "none"
 	Class       string
 	ID          string
+	Open        bool   // Whether the sidebar is open (for static rendering)
 }
 
 // ProviderProps defines the properties for the sidebar provider
@@ -82,7 +83,8 @@ func New(props Props, children ...g.Node) g.Node {
 		g.Attr("data-sidebar", "true"),
 		g.Attr("data-variant", props.Variant),
 		g.Attr("data-side", props.Side),
-		g.Attr("data-collapsible", props.Collapsible),
+		// Only apply collapsible attribute when sidebar is collapsed
+		g.If(!props.Open && props.Collapsible != "none", g.Attr("data-collapsible", props.Collapsible)),
 		g.If(props.ID != "", g.Attr("id", props.ID)),
 		
 		// Sidebar gap
@@ -142,6 +144,22 @@ func Trigger(props Props, children ...g.Node) g.Node {
 		g.Attr("type", "button"),
 		html.Class(lib.CN("size-7", props.Class)),
 		g.Group(buttonChildren),
+	)
+}
+
+// SidebarToggle creates a sidebar toggle button with chevron icon
+func SidebarToggle(props Props) g.Node {
+	return html.Button(
+		g.Attr("data-sidebar-toggle", "true"),
+		g.Attr("type", "button"),
+		html.Class(lib.CN(
+			"absolute -right-3 top-2 z-20 flex h-7 w-7 items-center justify-center rounded-md border bg-background text-foreground shadow-sm transition-all hover:bg-accent",
+			"group-data-[collapsible=offcanvas]:rotate-180",
+			props.Class,
+		)),
+		// Double chevron icon
+		g.Raw(`<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path><path d="M3.1584 3.13508C3.35985 2.94621 3.67627 2.95642 3.86514 3.15788L7.6151 7.15788C7.7954 7.3502 7.7954 7.64949 7.6151 7.84182L3.86514 11.8418C3.67627 12.0433 3.35985 12.0535 3.1584 11.8646C2.95694 11.6757 2.94673 11.3593 3.1356 11.1579L6.565 7.49985L3.1356 3.84182C2.94673 3.64036 2.95694 3.32394 3.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>`),
+		html.Span(html.Class("sr-only"), g.Text("Toggle Sidebar")),
 	)
 }
 

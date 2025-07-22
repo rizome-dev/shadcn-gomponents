@@ -1,6 +1,7 @@
 package avatar_test
 
 import (
+	"bytes"
 	"strings"
 	"testing"
 	g "maragu.dev/gomponents"
@@ -41,7 +42,7 @@ func TestAvatar(t *testing.T) {
 		},
 		{
 			name:   "small avatar",
-			avatar: avatar.Small(avatar.Fallback(g.Text("A"))),
+			avatar: avatar.SmallComponent(avatar.Fallback(g.Text("A"))),
 			contains: []string{
 				`h-8 w-8`,
 			},
@@ -123,7 +124,13 @@ func TestAvatar(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := test.avatar.String()
+			var buf bytes.Buffer
+			err := test.avatar.Render(&buf)
+			if err != nil {
+				t.Fatalf("failed to render: %v", err)
+			}
+			
+			result := buf.String()
 			for _, expected := range test.contains {
 				if !strings.Contains(result, expected) {
 					t.Errorf("expected result to contain %q, but it didn't.\nGot: %s", expected, result)

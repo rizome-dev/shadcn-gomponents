@@ -70,7 +70,7 @@ func New(props Props, children ...g.Node) g.Node {
 // DialogOverlay creates the AlertDialog overlay
 func DialogOverlay(class ...string) g.Node {
 	classes := lib.CN(
-		"fixed inset-0 z-50 bg-black/80",
+		"fixed inset-0 z-50 bg-background/80 backdrop-blur-sm",
 		lib.CN(class...),
 	)
 

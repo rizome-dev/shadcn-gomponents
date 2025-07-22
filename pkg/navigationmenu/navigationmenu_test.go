@@ -92,7 +92,7 @@ func TestList(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := renderToString(List(tt.props, tt.children...))
+			result := renderToString(ListComponent(tt.props, tt.children...))
 
 			for _, want := range tt.want {
 				if !strings.Contains(result, want) {
@@ -233,7 +233,7 @@ func TestContent(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := renderToString(Content(tt.props, tt.children...))
+			result := renderToString(ContentComponent(tt.props, tt.children...))
 
 			for _, want := range tt.want {
 				if !strings.Contains(result, want) {
@@ -302,7 +302,7 @@ func TestLink(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := renderToString(Link(tt.props, tt.children...))
+			result := renderToString(LinkComponent(tt.props, tt.children...))
 
 			for _, want := range tt.want {
 				if !strings.Contains(result, want) {
@@ -448,9 +448,9 @@ func TestSimpleMenu(t *testing.T) {
 
 func TestWithViewport(t *testing.T) {
 	result := renderToString(WithViewport(
-		List(
+		ListComponent(
 			ListProps{},
-			Item(ItemProps{}, Link(LinkProps{Href: "#"}, g.Text("Test"))),
+			Item(ItemProps{}, LinkComponent(LinkProps{Href: "#"}, g.Text("Test"))),
 		),
 	))
 
@@ -492,12 +492,12 @@ func TestWithDropdowns(t *testing.T) {
 func TestCompleteNavigation(t *testing.T) {
 	nav := New(
 		Props{},
-		List(
+		ListComponent(
 			ListProps{},
 			Item(
 				ItemProps{Value: "products"},
 				Trigger(TriggerProps{}, g.Text("Products")),
-				Content(
+				ContentComponent(
 					ContentProps{},
 					Ul(Class("p-4"),
 						ListItem("Product 1", "/product1", "Description 1"),
@@ -507,11 +507,11 @@ func TestCompleteNavigation(t *testing.T) {
 			),
 			Item(
 				ItemProps{},
-				Link(LinkProps{Href: "/pricing", Active: true}, g.Text("Pricing")),
+				LinkComponent(LinkProps{Href: "/pricing", Active: true}, g.Text("Pricing")),
 			),
 			Item(
 				ItemProps{},
-				Link(LinkProps{Href: "/contact", Disabled: true}, g.Text("Contact")),
+				LinkComponent(LinkProps{Href: "/contact", Disabled: true}, g.Text("Contact")),
 			),
 		),
 	)

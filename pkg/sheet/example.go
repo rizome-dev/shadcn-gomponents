@@ -16,10 +16,10 @@ func Example() g.Node {
 			html.H3(html.Class("text-lg font-semibold mb-4"), g.Text("Basic Sheet (Right)")),
 			Trigger(TriggerProps{}, g.Text("Open Sheet")),
 			RightSheet(
-				Props{Open: true},
+				Props{Open: false},
 				HeaderComponent(
 					HeaderProps{},
-					Title(TitleProps{}, g.Text("Edit Profile")),
+					TitleComponent(TitleProps{}, g.Text("Edit Profile")),
 					Description(DescriptionProps{}, g.Text("Make changes to your profile here. Click save when you're done.")),
 				),
 				html.Div(html.Class("grid gap-4 py-4"),
@@ -59,7 +59,7 @@ func Example() g.Node {
 						Props{Open: false},
 						HeaderComponent(
 							HeaderProps{},
-							Title(TitleProps{}, g.Text("Navigation")),
+							TitleComponent(TitleProps{}, g.Text("Navigation")),
 						),
 						html.Nav(html.Class("grid gap-4 py-4"),
 							html.A(html.Href("#"), html.Class("flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground hover:text-primary"),
@@ -90,7 +90,7 @@ func Example() g.Node {
 						html.Div(html.Class("mx-auto max-w-2xl"),
 							HeaderComponent(
 								HeaderProps{},
-								Title(TitleProps{}, g.Text("Notifications")),
+								TitleComponent(TitleProps{}, g.Text("Notifications")),
 								Description(DescriptionProps{}, g.Text("You have 3 unread messages.")),
 							),
 							html.Div(html.Class("grid gap-4 py-4"),
@@ -123,7 +123,7 @@ func Example() g.Node {
 						html.Div(html.Class("mx-auto max-w-2xl"),
 							HeaderComponent(
 								HeaderProps{Class: "text-center"},
-								Title(TitleProps{}, g.Text("Share")),
+								TitleComponent(TitleProps{}, g.Text("Share")),
 								Description(DescriptionProps{}, g.Text("Share this link with others")),
 							),
 							html.Div(html.Class("grid gap-4 py-4"),
@@ -174,7 +174,7 @@ func Example() g.Node {
 				Props{Open: false},
 				HeaderComponent(
 					HeaderProps{},
-					Title(TitleProps{}, g.Text("Mobile Optimized")),
+					TitleComponent(TitleProps{}, g.Text("Mobile Optimized")),
 					Description(DescriptionProps{}, g.Text("This sheet adapts to different screen sizes.")),
 				),
 				html.Div(html.Class("py-4"),
@@ -193,7 +193,7 @@ func Example() g.Node {
 				"/api/items",
 				HeaderComponent(
 					HeaderProps{},
-					Title(TitleProps{}, g.Text("Create New Item")),
+					TitleComponent(TitleProps{}, g.Text("Create New Item")),
 					Description(DescriptionProps{}, g.Text("Fill in the details below to create a new item.")),
 				),
 				html.Div(html.Class("grid gap-4 py-4"),
@@ -245,7 +245,7 @@ func Example() g.Node {
 				html.Div(html.Class("flex flex-col h-full"),
 					HeaderComponent(
 						HeaderProps{},
-						Title(TitleProps{}, g.Text("Order Details")),
+						TitleComponent(TitleProps{}, g.Text("Order Details")),
 						Description(DescriptionProps{}, g.Text("Order #12345 • Placed on Jan 15, 2024")),
 					),
 					

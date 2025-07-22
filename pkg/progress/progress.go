@@ -50,15 +50,7 @@ func New(props Props) g.Node {
 	)
 	
 	// Indicator classes
-	indicatorClasses := "h-full w-full flex-1 bg-primary transition-all"
-	
-	// Calculate transform
-	transform := ""
-	if percentage >= 100 {
-		transform = "translateX(0%)"
-	} else {
-		transform = fmt.Sprintf("translateX(-%d%%)", 100-percentage)
-	}
+	indicatorClasses := "h-full bg-primary transition-all"
 	
 	return html.Div(
 		html.Class(rootClasses),
@@ -71,7 +63,7 @@ func New(props Props) g.Node {
 		g.Attr("data-max", fmt.Sprintf("%d", props.Max)),
 		html.Div(
 			html.Class(indicatorClasses),
-			html.Style(fmt.Sprintf("transform: %s", transform)),
+			html.Style(fmt.Sprintf("width: %d%%", percentage)),
 		),
 	)
 }
@@ -156,8 +148,8 @@ func Striped(value int) g.Node {
 		g.Attr("aria-valuemax", "100"),
 		g.Attr("aria-valuenow", fmt.Sprintf("%d", value)),
 		html.Div(
-			html.Class("h-full w-full flex-1 bg-primary transition-all"),
-			html.Style(fmt.Sprintf("transform: translateX(-%d%%); %s", 100-value, stripedStyles)),
+			html.Class("h-full bg-primary transition-all"),
+			html.Style(fmt.Sprintf("width: %d%%; %s", value, stripedStyles)),
 		),
 	)
 }

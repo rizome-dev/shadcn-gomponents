@@ -8,6 +8,15 @@ import (
 	. "maragu.dev/gomponents/html"
 )
 
+func renderToString(node g.Node) string {
+	var buf strings.Builder
+	err := node.Render(&buf)
+	if err != nil {
+		panic(err) // For tests, panic on render error
+	}
+	return buf.String()
+}
+
 func TestNew(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -79,7 +88,7 @@ func TestNew(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := New(tt.props, tt.children...)
-			gotStr := got.Render()
+			gotStr := renderToString(got)
 			
 			for _, want := range tt.wantContains {
 				if !strings.Contains(gotStr, want) {
@@ -126,7 +135,7 @@ func TestViewport(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := Viewport(tt.props, tt.children...)
-			gotStr := got.Render()
+			gotStr := renderToString(got)
 			
 			for _, want := range tt.wantContains {
 				if !strings.Contains(gotStr, want) {
@@ -188,7 +197,7 @@ func TestScrollbar(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := Scrollbar(tt.props, tt.children...)
-			gotStr := got.Render()
+			gotStr := renderToString(got)
 			
 			for _, want := range tt.wantContains {
 				if !strings.Contains(gotStr, want) {
@@ -228,7 +237,7 @@ func TestThumb(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := Thumb(tt.props)
-			gotStr := got.Render()
+			gotStr := renderToString(got)
 			
 			for _, want := range tt.wantContains {
 				if !strings.Contains(gotStr, want) {
@@ -267,7 +276,7 @@ func TestCorner(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := Corner(tt.props)
-			gotStr := got.Render()
+			gotStr := renderToString(got)
 			
 			for _, want := range tt.wantContains {
 				if !strings.Contains(gotStr, want) {
@@ -283,7 +292,7 @@ func TestScrollAreaWithBar(t *testing.T) {
 		Props{},
 		g.Text("Content"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-type=\"always\"",
@@ -305,7 +314,7 @@ func TestHorizontalScrollArea(t *testing.T) {
 		Props{},
 		g.Text("Horizontal content"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-orientation=\"horizontal\"",
@@ -326,7 +335,7 @@ func TestScrollAreaAuto(t *testing.T) {
 		Props{},
 		g.Text("Auto content"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	if !strings.Contains(gotStr, "data-type=\"auto\"") {
 		t.Error("expected scroll area to have auto type")
@@ -338,7 +347,7 @@ func TestScrollAreaHover(t *testing.T) {
 		Props{},
 		g.Text("Hover content"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-type=\"hover\"",
@@ -358,7 +367,7 @@ func TestCodeScrollArea(t *testing.T) {
 		"custom-code",
 		g.Text("const code = 'hello';"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-orientation=\"both\"",
@@ -366,12 +375,12 @@ func TestCodeScrollArea(t *testing.T) {
 		"custom-code",
 		"<pre",
 		"<code",
-		"const code = 'hello';",
+		"const code = &#39;hello&#39;;",
 	}
 	
 	for _, want := range wantContains {
 		if !strings.Contains(gotStr, want) {
-			t.Errorf("expected output to contain %q", want)
+			t.Errorf("expected output to contain %q\nGot: %s", want, gotStr)
 		}
 	}
 }
@@ -382,7 +391,7 @@ func TestListScrollArea(t *testing.T) {
 		Li(g.Text("Item 1")),
 		Li(g.Text("Item 2")),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-type=\"auto\"",
@@ -403,7 +412,7 @@ func TestChatScrollArea(t *testing.T) {
 		Div(g.Text("Message 1")),
 		Div(g.Text("Message 2")),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-type=\"auto\"",
@@ -425,7 +434,7 @@ func TestImageGalleryScrollArea(t *testing.T) {
 		Img(Src("1.jpg")),
 		Img(Src("2.jpg")),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-orientation=\"horizontal\"",
@@ -448,7 +457,7 @@ func TestTableScrollArea(t *testing.T) {
 			Tr(Td(g.Text("Cell"))),
 		),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-orientation=\"both\"",

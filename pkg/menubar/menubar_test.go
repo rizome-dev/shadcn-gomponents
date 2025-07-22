@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	g "maragu.dev/gomponents"
-	html "maragu.dev/gomponents/html"
 )
 
 func renderToString(node g.Node) string {
@@ -201,7 +200,7 @@ func TestContent(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := renderToString(Content(tt.props, tt.children...))
+			result := renderToString(ContentComponent(tt.props, tt.children...))
 
 			for _, want := range tt.want {
 				if !strings.Contains(result, want) {
@@ -393,7 +392,7 @@ func TestLabel(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := renderToString(Label(tt.props, g.Text("Test Label")))
+			result := renderToString(LabelComponent(tt.props, g.Text("Test Label")))
 
 			for _, want := range tt.want {
 				if !strings.Contains(result, want) {
@@ -515,7 +514,7 @@ func TestCompleteMenubar(t *testing.T) {
 		Menu(
 			MenuProps{},
 			Trigger(TriggerProps{}, g.Text("File")),
-			Content(
+			ContentComponent(
 				ContentProps{},
 				Item(ItemProps{}, g.Text("New")),
 				Item(ItemProps{}, g.Text("Open")),

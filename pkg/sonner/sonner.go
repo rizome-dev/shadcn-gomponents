@@ -171,7 +171,7 @@ func Toast(props ToastProps) g.Node {
 				html.Class("shrink-0 rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"),
 				g.If(props.Type == ToastDefault, html.Class("bg-primary text-primary-foreground")),
 				g.If(props.Type != ToastDefault, html.Class("bg-current/10 text-current")),
-				g.Raw(props.Action.OnClick),
+				g.Attr("onclick", props.Action.OnClick),
 				g.Text(props.Action.Label),
 			),
 		)
@@ -193,7 +193,7 @@ func Toast(props ToastProps) g.Node {
 		g.Attr("id", props.ID),
 		g.Attr("data-toast", "true"),
 		g.Attr("data-type", string(props.Type)),
-		g.If(props.Duration > 0, g.Attr("data-duration", fmt.Sprintf("%d", props.Duration))),
+		g.If(props.Duration >= 0, g.Attr("data-duration", fmt.Sprintf("%d", props.Duration))),
 		html.Class(lib.CN(
 			"pointer-events-auto relative flex w-full items-center gap-3 overflow-hidden rounded-lg border p-4 pr-6 shadow-lg transition-all",
 			"data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none",
@@ -267,8 +267,8 @@ func WithAction(props ToastProps, label string, onClick string) g.Node {
 	return Toast(props)
 }
 
-// Loading creates a loading toast
-func Loading(message string) g.Node {
+// LoadingToast creates a loading toast
+func LoadingToast(message string) g.Node {
 	return Toast(ToastProps{
 		Type:        ToastDefault,
 		Description: message,

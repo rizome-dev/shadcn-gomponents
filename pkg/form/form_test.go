@@ -10,7 +10,10 @@ import (
 
 func renderToString(node g.Node) string {
 	var buf strings.Builder
-	node.Render(&buf)
+	err := node.Render(&buf)
+	if err != nil {
+		panic(err) // For tests, panic on render error
+	}
 	return buf.String()
 }
 
@@ -270,7 +273,7 @@ func TestFormLegend(t *testing.T) {
 }
 
 func TestSection(t *testing.T) {
-	got := renderToString(Section("Title", "Description", g.Text("Content")))
+	got := renderToString(FormSection("Title", "Description", g.Text("Content")))
 	wants := []string{
 		`<h3 class="text-lg font-medium">Title</h3>`,
 		`<p class="text-sm text-muted-foreground">Description</p>`,

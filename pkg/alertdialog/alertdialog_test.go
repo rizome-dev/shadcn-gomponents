@@ -62,7 +62,7 @@ func TestAlertDialog(t *testing.T) {
 		}
 		output := buf.String()
 
-		if !strings.Contains(output, "bg-black/80") {
+		if !strings.Contains(output, "bg-background/80") {
 			t.Error("expected overlay to have background color")
 		}
 		if !strings.Contains(output, "fixed inset-0") {

@@ -16,12 +16,12 @@ func TestNew(t *testing.T) {
 		contains []string
 	}{
 		{
-			name:  "default sidebar",
-			props: Props{},
+			name:  "default sidebar (collapsed)",
+			props: Props{Open: false},
 			children: []g.Node{
-				Header(Props{}, g.Text("Header")),
-				Content(Props{}, g.Text("Content")),
-				Footer(Props{}, g.Text("Footer")),
+				HeaderComponent(Props{}, g.Text("Header")),
+				ContentComponent(Props{}, g.Text("Content")),
+				FooterComponent(Props{}, g.Text("Footer")),
 			},
 			contains: []string{
 				`data-sidebar="true"`,
@@ -34,13 +34,30 @@ func TestNew(t *testing.T) {
 			},
 		},
 		{
+			name:  "open sidebar",
+			props: Props{Open: true},
+			children: []g.Node{
+				HeaderComponent(Props{}, g.Text("Header")),
+				ContentComponent(Props{}, g.Text("Content")),
+				FooterComponent(Props{}, g.Text("Footer")),
+			},
+			contains: []string{
+				`data-sidebar="true"`,
+				`data-variant="sidebar"`,
+				`data-side="left"`,
+				"Header",
+				"Content",
+				"Footer",
+			},
+		},
+		{
 			name: "right side floating sidebar",
 			props: Props{
 				Side:    "right",
 				Variant: "floating",
 			},
 			children: []g.Node{
-				Content(Props{}, g.Text("Floating Content")),
+				ContentComponent(Props{}, g.Text("Floating Content")),
 			},
 			contains: []string{
 				`data-side="right"`,
@@ -54,7 +71,7 @@ func TestNew(t *testing.T) {
 				Collapsible: "none",
 			},
 			children: []g.Node{
-				Content(Props{}, g.Text("Static Content")),
+				ContentComponent(Props{}, g.Text("Static Content")),
 			},
 			contains: []string{
 				`data-sidebar="true"`,
@@ -68,7 +85,7 @@ func TestNew(t *testing.T) {
 				Collapsible: "icon",
 			},
 			children: []g.Node{
-				Content(Props{}, g.Text("Icon Collapsible")),
+				ContentComponent(Props{}, g.Text("Icon Collapsible")),
 			},
 			contains: []string{
 				`data-collapsible="icon"`,
@@ -198,6 +215,30 @@ func TestTrigger(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestSidebarToggle(t *testing.T) {
+	var buf bytes.Buffer
+	component := SidebarToggle(Props{})
+	err := component.Render(&buf)
+	if err != nil {
+		t.Fatalf("Render() error = %v", err)
+	}
+
+	result := buf.String()
+	expected := []string{
+		`data-sidebar-toggle="true"`,
+		`type="button"`,
+		"Toggle Sidebar",
+		"absolute -right-3 top-2",
+		`<svg`,
+	}
+
+	for _, exp := range expected {
+		if !strings.Contains(result, exp) {
+			t.Errorf("Expected output to contain %q, but it didn't. Got:\n%s", exp, result)
+		}
 	}
 }
 

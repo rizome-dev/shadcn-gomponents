@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	g "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 )
 
 func renderToString(node g.Node) string {
@@ -66,7 +65,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestContent(t *testing.T) {
-	result := renderToString(Content(ContentProps{}, g.Text("content")))
+	result := renderToString(ContentComponent(ContentProps{}, g.Text("content")))
 
 	want := []string{
 		`flex flex-row items-center gap-1`,
@@ -170,7 +169,7 @@ func TestLink(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := renderToString(Link(tt.props, g.Text("test")))
+			result := renderToString(LinkComponent(tt.props, g.Text("test")))
 
 			for _, want := range tt.want {
 				if !strings.Contains(result, want) {

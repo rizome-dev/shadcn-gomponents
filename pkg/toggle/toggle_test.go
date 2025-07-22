@@ -4,8 +4,18 @@ import (
 	"strings"
 	"testing"
 	g "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 	"github.com/rizome-dev/shadcn-gomponents/pkg/toggle"
 )
+
+func renderToString(node g.Node) string {
+	var buf strings.Builder
+	err := node.Render(&buf)
+	if err != nil {
+		panic(err) // For tests, panic on render error
+	}
+	return buf.String()
+}
 
 func TestToggle(t *testing.T) {
 	tests := []struct {
@@ -89,7 +99,7 @@ func TestToggle(t *testing.T) {
 			contains: []string{
 				`aria-label="Toggle bold"`,
 				`<svg class="h-4 w-4"`,
-				`[&_svg]:size-4`,
+				`[&amp;_svg]:size-4`,
 			},
 		},
 		{
@@ -142,7 +152,7 @@ func TestToggle(t *testing.T) {
 			),
 			contains: []string{
 				`aria-label="Toggle bold"`,
-				`onclick="document.execCommand('bold')"`,
+				`onclick="document.execCommand(&#39;bold&#39;)"`,
 			},
 		},
 		{
@@ -173,7 +183,7 @@ func TestToggle(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := test.toggle.String()
+			result := renderToString(test.toggle)
 			for _, expected := range test.contains {
 				if !strings.Contains(result, expected) {
 					t.Errorf("expected result to contain %q, but it didn't.\nGot: %s", expected, result)

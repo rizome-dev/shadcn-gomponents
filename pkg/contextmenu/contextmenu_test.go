@@ -5,12 +5,14 @@ import (
 	"testing"
 
 	g "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 )
 
 func renderToString(node g.Node) string {
 	var buf strings.Builder
-	node.Render(&buf)
+	err := node.Render(&buf)
+	if err != nil {
+		panic(err) // For tests, panic on render error
+	}
 	return buf.String()
 }
 
@@ -102,9 +104,9 @@ func TestContent(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := renderToString(Content(tt.props, g.Text("Menu content")))
+			got := renderToString(ContentComponent(tt.props, g.Text("Menu content")))
 			if !strings.Contains(got, tt.want) {
-				t.Errorf("Content() = %v, want %v", got, tt.want)
+				t.Errorf("ContentComponent() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -224,9 +226,9 @@ func TestLabel(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := renderToString(Label(tt.props, g.Text("Label")))
+			got := renderToString(LabelComponent(tt.props, g.Text("Label")))
 			if !strings.Contains(got, tt.want) {
-				t.Errorf("Label() = %v, want %v", got, tt.want)
+				t.Errorf("LabelComponent() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -260,9 +262,9 @@ func TestSubMenu(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := renderToString(Sub(tt.props, g.Text("Submenu")))
+			got := renderToString(SubMenu(tt.props, g.Text("Submenu")))
 			if !strings.Contains(got, tt.want) {
-				t.Errorf("Sub() = %v, want %v", got, tt.want)
+				t.Errorf("SubMenu() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -316,7 +318,7 @@ func TestCompleteMenu(t *testing.T) {
 			TriggerProps{Class: "trigger-area"},
 			g.Text("Right click me"),
 		),
-		Content(
+		ContentComponent(
 			ContentProps{},
 			Item(ItemProps{}, g.Text("Copy")),
 			Item(ItemProps{}, g.Text("Paste")),
@@ -330,7 +332,7 @@ func TestCompleteMenu(t *testing.T) {
 				RadioItem(RadioItemProps{Value: "large"}, g.Text("Large")),
 			),
 			Separator(SeparatorProps{}),
-			Sub(
+			SubMenu(
 				SubProps{},
 				SubTrigger(SubTriggerProps{}, g.Text("More options")),
 				SubContent(

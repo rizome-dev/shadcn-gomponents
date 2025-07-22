@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	g "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func TestToaster(t *testing.T) {
@@ -144,7 +145,7 @@ func TestToast(t *testing.T) {
 				Description: "A new version is ready",
 				Action: &ToastAction{
 					Label:   "Update Now",
-					OnClick: `onclick="updateApp()"`,
+					OnClick: `updateApp()`,
 				},
 			},
 			contains: []string{
@@ -241,7 +242,7 @@ func TestHelperFunctions(t *testing.T) {
 			component: WithAction(ToastProps{
 				Title:       "Confirm",
 				Description: "Are you sure?",
-			}, "Yes", `onclick="confirm()"`),
+			}, "Yes", `confirm()`),
 			contains: []string{
 				`>Confirm</div>`,
 				`>Are you sure?</div>`,
@@ -251,7 +252,7 @@ func TestHelperFunctions(t *testing.T) {
 		},
 		{
 			name:      "loading helper",
-			component: Loading("Processing..."),
+			component: LoadingToast("Processing..."),
 			contains: []string{
 				`data-type="default"`,
 				`>Processing...</div>`,

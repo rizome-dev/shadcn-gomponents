@@ -44,7 +44,7 @@ func Example() g.Node {
 func ExampleRegistration() g.Node {
 	return New(
 		Props{Method: "post", Action: "/register", Class: "max-w-2xl"},
-		Section("Personal Information", "Please provide your personal details.",
+		FormSection("Personal Information", "Please provide your personal details.",
 			FormRow(
 				FormItem(
 					ItemProps{},
@@ -112,7 +112,7 @@ func ExampleRegistration() g.Node {
 			),
 		),
 		
-		Section("Account Security", "Create a strong password for your account.",
+		FormSection("Account Security", "Create a strong password for your account.",
 			FormItem(
 				ItemProps{},
 				FormLabel(LabelProps{For: "password", Required: true}, g.Text("Password")),
@@ -221,7 +221,7 @@ func ExampleRegistration() g.Node {
 func ExampleSettings() g.Node {
 	return New(
 		Props{Method: "post", Action: "/settings", Class: "max-w-4xl"},
-		Section("Profile", "This is how others will see you on the site.",
+		FormSection("Profile", "This is how others will see you on the site.",
 			FormItem(
 				ItemProps{},
 				FormLabel(LabelProps{For: "username", Required: true}, g.Text("Username")),
@@ -288,7 +288,7 @@ func ExampleSettings() g.Node {
 			),
 		),
 		
-		Section("Notifications", "Configure how you receive notifications.",
+		FormSection("Notifications", "Configure how you receive notifications.",
 			FormFieldset(
 				FieldsetProps{},
 				FormLegend(LegendProps{}, g.Text("Email Notifications")),

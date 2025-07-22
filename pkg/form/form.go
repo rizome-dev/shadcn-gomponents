@@ -177,8 +177,8 @@ func FormLegend(props LegendProps, children ...g.Node) g.Node {
 }
 
 
-// Section creates a form section with heading
-func Section(title string, description string, children ...g.Node) g.Node {
+// FormSection creates a form section with heading
+func FormSection(title string, description string, children ...g.Node) g.Node {
 	return html.Div(html.Class("space-y-6"),
 		html.Div(
 			html.H3(html.Class("text-lg font-medium"), g.Text(title)),

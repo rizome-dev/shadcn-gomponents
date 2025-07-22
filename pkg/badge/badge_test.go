@@ -1,6 +1,7 @@
 package badge_test
 
 import (
+	"bytes"
 	"strings"
 	"testing"
 	g "maragu.dev/gomponents"
@@ -78,7 +79,7 @@ func TestBadge(t *testing.T) {
 		},
 		{
 			name: "badge as link",
-			badge: badge.Link(
+			badge: badge.LinkComponent(
 				"/docs",
 				badge.Props{Variant: "secondary"},
 				g.Text("Documentation"),
@@ -107,7 +108,13 @@ func TestBadge(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := test.badge.String()
+			var buf bytes.Buffer
+			err := test.badge.Render(&buf)
+			if err != nil {
+				t.Fatalf("failed to render: %v", err)
+			}
+			
+			result := buf.String()
 			for _, expected := range test.contains {
 				if !strings.Contains(result, expected) {
 					t.Errorf("expected result to contain %q, but it didn't.\nGot: %s", expected, result)

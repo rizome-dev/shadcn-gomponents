@@ -19,7 +19,7 @@ func TestTable(t *testing.T) {
 			name:  "basic table",
 			props: Props{},
 			children: []g.Node{
-				Header(Props{}, g.Text("Header")),
+				HeaderComponent(Props{}, g.Text("Header")),
 				Body(Props{}, g.Text("Body")),
 			},
 			contains: []string{
@@ -52,7 +52,7 @@ func TestTable(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var buf bytes.Buffer
-			component := Table(tt.props, tt.children...)
+			component := TableComponent(tt.props, tt.children...)
 			err := component.Render(&buf)
 			if err != nil {
 				t.Fatalf("Render() error = %v", err)
@@ -72,7 +72,7 @@ func TestTableComponents(t *testing.T) {
 	// Test Header
 	t.Run("header", func(t *testing.T) {
 		var buf bytes.Buffer
-		component := Header(Props{Class: "custom-header"}, g.Text("Header Content"))
+		component := HeaderComponent(Props{Class: "custom-header"}, g.Text("Header Content"))
 		err := component.Render(&buf)
 		if err != nil {
 			t.Fatalf("Render() error = %v", err)
@@ -82,14 +82,14 @@ func TestTableComponents(t *testing.T) {
 		expected := []string{
 			`<thead`,
 			`data-table-header="true"`,
-			`[&_tr]:border-b`,
+			`[&amp;_tr]:border-b`,
 			`custom-header`,
 			"Header Content",
 		}
 
 		for _, exp := range expected {
 			if !strings.Contains(result, exp) {
-				t.Errorf("Expected output to contain %q", exp)
+				t.Errorf("Expected output to contain %q\nGot: %s", exp, result)
 			}
 		}
 	})
@@ -107,13 +107,13 @@ func TestTableComponents(t *testing.T) {
 		expected := []string{
 			`<tbody`,
 			`data-table-body="true"`,
-			`[&_tr:last-child]:border-0`,
+			`[&amp;_tr:last-child]:border-0`,
 			"Body Content",
 		}
 
 		for _, exp := range expected {
 			if !strings.Contains(result, exp) {
-				t.Errorf("Expected output to contain %q", exp)
+				t.Errorf("Expected output to contain %q\nGot: %s", exp, result)
 			}
 		}
 	})
@@ -121,7 +121,7 @@ func TestTableComponents(t *testing.T) {
 	// Test Footer
 	t.Run("footer", func(t *testing.T) {
 		var buf bytes.Buffer
-		component := Footer(Props{}, g.Text("Footer Content"))
+		component := FooterComponent(Props{}, g.Text("Footer Content"))
 		err := component.Render(&buf)
 		if err != nil {
 			t.Fatalf("Render() error = %v", err)
@@ -137,7 +137,7 @@ func TestTableComponents(t *testing.T) {
 
 		for _, exp := range expected {
 			if !strings.Contains(result, exp) {
-				t.Errorf("Expected output to contain %q", exp)
+				t.Errorf("Expected output to contain %q\nGot: %s", exp, result)
 			}
 		}
 	})
@@ -161,7 +161,7 @@ func TestTableComponents(t *testing.T) {
 
 		for _, exp := range expected {
 			if !strings.Contains(result, exp) {
-				t.Errorf("Expected output to contain %q", exp)
+				t.Errorf("Expected output to contain %q\nGot: %s", exp, result)
 			}
 		}
 	})
@@ -372,7 +372,7 @@ func TestHelperTables(t *testing.T) {
 
 		for _, exp := range expected {
 			if !strings.Contains(result, exp) {
-				t.Errorf("Expected output to contain %q", exp)
+				t.Errorf("Expected output to contain %q\nGot: %s", exp, result)
 			}
 		}
 	})
@@ -387,8 +387,8 @@ func TestHelperTables(t *testing.T) {
 		}
 
 		result := buf.String()
-		if !strings.Contains(result, "[&_tbody_tr:nth-child(even)]:bg-muted/50") {
-			t.Errorf("Expected striped table styling")
+		if !strings.Contains(result, "[&amp;_tbody_tr:nth-child(even)]:bg-muted/50") {
+			t.Errorf("Expected striped table styling\nGot: %s", result)
 		}
 	})
 
@@ -402,8 +402,8 @@ func TestHelperTables(t *testing.T) {
 		}
 
 		result := buf.String()
-		if !strings.Contains(result, "[&_tr]:border-0") {
-			t.Errorf("Expected borderless table styling")
+		if !strings.Contains(result, "[&amp;_tr]:border-0") {
+			t.Errorf("Expected borderless table styling\nGot: %s", result)
 		}
 	})
 
@@ -417,8 +417,8 @@ func TestHelperTables(t *testing.T) {
 		}
 
 		result := buf.String()
-		if !strings.Contains(result, "[&_th]:px-1") || !strings.Contains(result, "[&_td]:p-1") {
-			t.Errorf("Expected compact table styling")
+		if !strings.Contains(result, "[&amp;_th]:px-1") || !strings.Contains(result, "[&amp;_td]:p-1") {
+			t.Errorf("Expected compact table styling\nGot: %s", result)
 		}
 	})
 

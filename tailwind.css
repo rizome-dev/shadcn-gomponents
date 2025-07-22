@@ -118,4 +118,21 @@
     border-top-width: 1px;
     border-bottom-width: 1px;
   }
+  
+  /* Background utilities for components */
+  .bg-primary {
+    background-color: hsl(var(--primary));
+  }
+  
+  .bg-secondary {
+    background-color: hsl(var(--secondary));
+  }
+  
+  .bg-background {
+    background-color: hsl(var(--background));
+  }
+  
+  .border-primary {
+    border-color: hsl(var(--primary));
+  }
 }

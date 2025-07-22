@@ -206,8 +206,8 @@ func FooterComponent(props FooterProps, children ...g.Node) g.Node {
 	)
 }
 
-// Title creates a Sheet title
-func Title(props TitleProps, children ...g.Node) g.Node {
+// TitleComponent creates a Sheet title
+func TitleComponent(props TitleProps, children ...g.Node) g.Node {
 	classes := lib.CN(
 		"text-lg font-semibold text-foreground",
 		props.Class,

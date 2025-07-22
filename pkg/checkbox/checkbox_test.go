@@ -1,6 +1,7 @@
 package checkbox_test
 
 import (
+	"bytes"
 	"strings"
 	"testing"
 	g "maragu.dev/gomponents"
@@ -25,7 +26,7 @@ func TestCheckbox(t *testing.T) {
 				`aria-checked="false"`,
 			},
 			notContains: []string{
-				`checked`,
+				` checked`, // Space before to ensure it's the attribute, not part of class name
 				`<svg`,
 			},
 		},
@@ -146,7 +147,13 @@ func TestCheckbox(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := test.checkbox.String()
+			var buf bytes.Buffer
+			err := test.checkbox.Render(&buf)
+			if err != nil {
+				t.Fatalf("failed to render: %v", err)
+			}
+			
+			result := buf.String()
 			
 			// Check for expected content
 			for _, expected := range test.contains {

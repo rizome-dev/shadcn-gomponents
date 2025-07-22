@@ -180,7 +180,7 @@ func FormSheetHTMX(htmxProps HTMXProps, formAction string, title string, childre
 				hx.Swap("outerHTML"),
 				HeaderComponent(
 					HeaderProps{},
-					Title(TitleProps{}, g.Text(title)),
+					TitleComponent(TitleProps{}, g.Text(title)),
 				),
 				g.Group(children),
 			),
@@ -216,7 +216,7 @@ func NavigationSheetHTMX(htmxProps HTMXProps, items []NavItem) g.Node {
 			html.Class("flex flex-col space-y-4"),
 			HeaderComponent(
 				HeaderProps{},
-				Title(TitleProps{}, g.Text("Navigation")),
+				TitleComponent(TitleProps{}, g.Text("Navigation")),
 			),
 			html.Div(
 				html.Class("flex-1 overflow-y-auto"),
@@ -286,7 +286,7 @@ func SheetHandlers(mux *http.ServeMux) {
 		content := html.Div(
 			HeaderComponent(
 				HeaderProps{},
-				Title(TitleProps{}, g.Text("Edit Profile")),
+				TitleComponent(TitleProps{}, g.Text("Edit Profile")),
 				Description(DescriptionProps{}, g.Text("Make changes to your profile here. Click save when you're done.")),
 			),
 			html.Div(html.Class("grid gap-4 py-4"),
@@ -459,7 +459,7 @@ func SheetHandlers(mux *http.ServeMux) {
 		node := html.Div(
 			HeaderComponent(
 				HeaderProps{},
-				Title(TitleProps{}, g.Text("Account Details")),
+				TitleComponent(TitleProps{}, g.Text("Account Details")),
 				Description(DescriptionProps{}, g.Text("View and manage your account information.")),
 			),
 			html.Div(html.Class("space-y-4 py-4"),
@@ -516,7 +516,7 @@ func SheetHandlers(mux *http.ServeMux) {
 			content = html.Div(
 				HeaderComponent(
 					HeaderProps{},
-					Title(TitleProps{}, g.Text("Step 1: Basic Information")),
+					TitleComponent(TitleProps{}, g.Text("Step 1: Basic Information")),
 					Description(DescriptionProps{}, g.Text("Let's start with your basic details.")),
 				),
 				html.Form(
@@ -544,7 +544,7 @@ func SheetHandlers(mux *http.ServeMux) {
 			content = html.Div(
 				HeaderComponent(
 					HeaderProps{},
-					Title(TitleProps{}, g.Text("Step 2: Contact Information")),
+					TitleComponent(TitleProps{}, g.Text("Step 2: Contact Information")),
 					Description(DescriptionProps{}, g.Text("How can we reach you?")),
 				),
 				html.Form(
@@ -580,7 +580,7 @@ func SheetHandlers(mux *http.ServeMux) {
 			content = html.Div(
 				HeaderComponent(
 					HeaderProps{},
-					Title(TitleProps{}, g.Text("All Done!")),
+					TitleComponent(TitleProps{}, g.Text("All Done!")),
 					Description(DescriptionProps{}, g.Text("Your information has been saved successfully.")),
 				),
 				html.Div(html.Class("py-8 text-center"),

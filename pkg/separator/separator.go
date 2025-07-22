@@ -20,9 +20,8 @@ func New(props Props) g.Node {
 		props.Orientation = "horizontal"
 	}
 	// Default to decorative if not specified (matching shadcn-ui behavior)
-	if !props.Decorative {
-		props.Decorative = true
-	}
+	// Since bool fields default to false in Go, and false means non-decorative,
+	// we don't need to set a default - the zero value (false) means semantic
 
 	// Build base classes
 	baseClasses := "shrink-0 bg-border"

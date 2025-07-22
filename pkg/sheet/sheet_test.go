@@ -8,6 +8,15 @@ import (
 	. "maragu.dev/gomponents/html"
 )
 
+func renderToString(node g.Node) string {
+	var buf strings.Builder
+	err := node.Render(&buf)
+	if err != nil {
+		panic(err) // For tests, panic on render error
+	}
+	return buf.String()
+}
+
 func TestNew(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -54,7 +63,7 @@ func TestNew(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := New(tt.props, tt.children...)
-			gotStr := got.Render()
+			gotStr := renderToString(got)
 			
 			for _, want := range tt.wantContains {
 				if !strings.Contains(gotStr, want) {
@@ -110,7 +119,7 @@ func TestTrigger(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := Trigger(tt.props, tt.children...)
-			gotStr := got.Render()
+			gotStr := renderToString(got)
 			
 			for _, want := range tt.wantContains {
 				if !strings.Contains(gotStr, want) {
@@ -152,7 +161,7 @@ func TestOverlay(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := Overlay(tt.props)
-			gotStr := got.Render()
+			gotStr := renderToString(got)
 			
 			for _, want := range tt.wantContains {
 				if !strings.Contains(gotStr, want) {
@@ -243,8 +252,8 @@ func TestContent(t *testing.T) {
 	
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := Content(tt.props, tt.children...)
-			gotStr := got.Render()
+			got := ContentComponent(tt.props, tt.children...)
+			gotStr := renderToString(got)
 			
 			for _, want := range tt.wantContains {
 				if !strings.Contains(gotStr, want) {
@@ -256,11 +265,11 @@ func TestContent(t *testing.T) {
 }
 
 func TestHeader(t *testing.T) {
-	got := Header(
+	got := HeaderComponent(
 		HeaderProps{},
 		g.Text("Header content"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"flex flex-col space-y-2",
@@ -275,11 +284,11 @@ func TestHeader(t *testing.T) {
 }
 
 func TestFooter(t *testing.T) {
-	got := Footer(
+	got := FooterComponent(
 		FooterProps{},
 		g.Text("Footer content"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
@@ -294,11 +303,11 @@ func TestFooter(t *testing.T) {
 }
 
 func TestTitle(t *testing.T) {
-	got := Title(
+	got := TitleComponent(
 		TitleProps{},
 		g.Text("Sheet Title"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"<h2",
@@ -318,7 +327,7 @@ func TestDescription(t *testing.T) {
 		DescriptionProps{},
 		g.Text("Sheet description"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"<p",
@@ -338,7 +347,7 @@ func TestClose(t *testing.T) {
 		CloseProps{Class: "custom-close"},
 		g.Text("Cancel"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"type=\"button\"",
@@ -360,7 +369,7 @@ func TestWithForm(t *testing.T) {
 		"/api/submit",
 		g.Text("Form content"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"<form",
@@ -383,7 +392,7 @@ func TestRightSheet(t *testing.T) {
 		Props{Open: true},
 		g.Text("Right sheet content"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-side=\"right\"",
@@ -403,7 +412,7 @@ func TestLeftSheet(t *testing.T) {
 		Props{Open: true},
 		g.Text("Left sheet content"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-side=\"left\"",
@@ -422,7 +431,7 @@ func TestTopSheet(t *testing.T) {
 		Props{Open: true},
 		g.Text("Top sheet content"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-side=\"top\"",
@@ -441,7 +450,7 @@ func TestBottomSheet(t *testing.T) {
 		Props{Open: true},
 		g.Text("Bottom sheet content"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-side=\"bottom\"",
@@ -460,7 +469,7 @@ func TestMobileSheet(t *testing.T) {
 		Props{Open: true},
 		g.Text("Mobile sheet content"),
 	)
-	gotStr := got.Render()
+	gotStr := renderToString(got)
 	
 	wantContains := []string{
 		"data-side=\"bottom\"",

@@ -113,13 +113,15 @@ func CalendarGrid(props Props) g.Node {
 		html.Class("w-full"),
 		// Weekday headers
 		g.If(props.ShowDays,
-			html.Div(html.Class("grid grid-cols-7 mb-1"),
-				g.Group(g.Map([]string{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"}, func(day string) g.Node {
-					return html.Div(
-						html.Class("text-center text-xs font-medium text-muted-foreground p-0"),
-						g.Text(day[:2]),
-					)
-				})),
+			html.Div(
+				html.Class("grid grid-cols-7 mb-1"),
+				html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("Su")),
+				html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("Mo")),
+				html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("Tu")),
+				html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("We")),
+				html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("Th")),
+				html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("Fr")),
+				html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("Sa")),
 			),
 		),
 		// Calendar days
@@ -303,13 +305,15 @@ func CustomDateRangeGrid(startDate, endDate, month, startCalDate, endCalDate, fi
 	currentDate := startCalDate
 	
 	// Weekday headers
-	weeks = append(weeks, html.Div(html.Class("grid grid-cols-7 mb-1"),
-		g.Group(g.Map([]string{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"}, func(day string) g.Node {
-			return html.Div(
-				html.Class("text-center text-xs font-medium text-muted-foreground p-0"),
-				g.Text(day[:2]),
-			)
-		})),
+	weeks = append(weeks, html.Div(
+		html.Class("grid grid-cols-7 mb-1"),
+		html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("Su")),
+		html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("Mo")),
+		html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("Tu")),
+		html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("We")),
+		html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("Th")),
+		html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("Fr")),
+		html.Div(html.Class("text-center text-xs font-medium text-muted-foreground p-0"), g.Text("Sa")),
 	))
 	
 	for currentDate.Before(endCalDate.AddDate(0, 0, 1)) {

@@ -276,8 +276,8 @@ func Separator(props SeparatorProps) g.Node {
 	)
 }
 
-// Sub creates a submenu container
-func Sub(props SubProps, children ...g.Node) g.Node {
+// SubMenu creates a submenu container
+func SubMenu(props SubProps, children ...g.Node) g.Node {
 	return html.Div(
 		g.Attr("data-context-menu", "sub"),
 		g.If(props.Open, g.Attr("data-state", "open")),

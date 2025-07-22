@@ -1,6 +1,7 @@
 package popover
 
 import (
+	"bytes"
 	"strings"
 	"testing"
 	
@@ -16,12 +17,13 @@ func TestNew(t *testing.T) {
 		want     string
 	}{
 		{
-			name:  "default popover",
+			name:  "default popover (closed)",
 			props: Props{},
 			children: []g.Node{
+				g.Text("Trigger"),
 				g.Text("Content"),
 			},
-			want: `<div class="relative inline-block" data-state="closed">Content</div>`,
+			want: `<div class="relative inline-block" data-state="closed">Trigger</div>`,
 		},
 		{
 			name: "open popover",
@@ -29,9 +31,10 @@ func TestNew(t *testing.T) {
 				Open: true,
 			},
 			children: []g.Node{
+				g.Text("Trigger"),
 				g.Text("Content"),
 			},
-			want: `<div class="relative inline-block" data-state="open">Content</div>`,
+			want: `<div class="relative inline-block" data-state="open">TriggerContent</div>`,
 		},
 		{
 			name: "popover with custom class",
@@ -39,16 +42,22 @@ func TestNew(t *testing.T) {
 				Class: "custom-class",
 			},
 			children: []g.Node{
+				g.Text("Trigger"),
 				g.Text("Content"),
 			},
-			want: `<div class="relative inline-block custom-class" data-state="closed">Content</div>`,
+			want: `<div class="relative inline-block custom-class" data-state="closed">Trigger</div>`,
 		},
 	}
 	
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := New(tt.props, tt.children...)
-			gotStr := got.Render()
+			var buf bytes.Buffer
+			err := got.Render(&buf)
+			if err != nil {
+				t.Fatalf("Render() error = %v", err)
+			}
+			gotStr := buf.String()
 			
 			// Normalize whitespace for comparison
 			gotStr = strings.TrimSpace(gotStr)
@@ -101,7 +110,12 @@ func TestTrigger(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := Trigger(tt.props, tt.children...)
-			gotStr := got.Render()
+			var buf bytes.Buffer
+			err := got.Render(&buf)
+			if err != nil {
+				t.Fatalf("Render() error = %v", err)
+			}
+			gotStr := buf.String()
 			
 			// Normalize whitespace for comparison
 			gotStr = strings.TrimSpace(gotStr)
@@ -129,7 +143,6 @@ func TestContent(t *testing.T) {
 			},
 			wantContains: []string{
 				"role=\"dialog\"",
-				"data-state=\"open\"",
 				"data-side=\"bottom\"",
 				"data-align=\"center\"",
 				"Popover content",
@@ -178,8 +191,13 @@ func TestContent(t *testing.T) {
 	
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := Content(tt.props, tt.children...)
-			gotStr := got.Render()
+			got := ContentComponent(tt.props, tt.children...)
+			var buf bytes.Buffer
+			err := got.Render(&buf)
+			if err != nil {
+				t.Fatalf("Render() error = %v", err)
+			}
+			gotStr := buf.String()
 			
 			for _, want := range tt.wantContains {
 				if !strings.Contains(gotStr, want) {
@@ -282,7 +300,12 @@ func TestWithArrow(t *testing.T) {
 		ContentProps{Side: "bottom"},
 		g.Text("Content with arrow"),
 	)
-	gotStr := got.Render()
+	var buf bytes.Buffer
+	err := got.Render(&buf)
+	if err != nil {
+		t.Fatalf("Render() error = %v", err)
+	}
+	gotStr := buf.String()
 	
 	// Check for arrow element
 	if !strings.Contains(gotStr, "rotate-45") {
@@ -322,7 +345,12 @@ func TestClose(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := Close(tt.class...)
-			gotStr := got.Render()
+			var buf bytes.Buffer
+			err := got.Render(&buf)
+			if err != nil {
+				t.Fatalf("Render() error = %v", err)
+			}
+			gotStr := buf.String()
 			
 			for _, want := range tt.wantContains {
 				if !strings.Contains(gotStr, want) {

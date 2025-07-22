@@ -75,7 +75,7 @@ func Examples() g.Node {
 			html.Div(
 				html.Class("space-y-2"),
 				// Simple loading
-				Loading("Processing your request..."),
+				LoadingToast("Processing your request..."),
 				
 				// Loading with custom styling
 				Toast(ToastProps{

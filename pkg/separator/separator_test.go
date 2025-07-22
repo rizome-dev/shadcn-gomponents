@@ -7,6 +7,15 @@ import (
 	"github.com/rizome-dev/shadcn-gomponents/pkg/separator"
 )
 
+func renderToString(node g.Node) string {
+	var buf strings.Builder
+	err := node.Render(&buf)
+	if err != nil {
+		panic(err) // For tests, panic on render error
+	}
+	return buf.String()
+}
+
 func TestSeparator(t *testing.T) {
 	tests := []struct {
 		name      string
@@ -81,7 +90,7 @@ func TestSeparator(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := test.separator.String()
+			result := renderToString(test.separator)
 			
 			// Check for expected content
 			for _, expected := range test.contains {

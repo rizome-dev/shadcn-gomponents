@@ -7,6 +7,15 @@ import (
 	"github.com/rizome-dev/shadcn-gomponents/pkg/skeleton"
 )
 
+func renderToString(node g.Node) string {
+	var buf strings.Builder
+	err := node.Render(&buf)
+	if err != nil {
+		panic(err) // For tests, panic on render error
+	}
+	return buf.String()
+}
+
 func TestSkeleton(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -116,7 +125,7 @@ func TestSkeleton(t *testing.T) {
 		},
 		{
 			name:     "table skeleton",
-			skeleton: skeleton.Table(2),
+			skeleton: skeleton.TableComponent(2),
 			contains: []string{
 				`class="rounded-md border"`,
 				`class="flex gap-4 p-4 border-b"`,
@@ -147,7 +156,7 @@ func TestSkeleton(t *testing.T) {
 		},
 		{
 			name:     "list skeleton",
-			skeleton: skeleton.List(3),
+			skeleton: skeleton.ListComponent(3),
 			contains: []string{
 				`class="flex items-center space-x-3"`,
 				`h-4 w-4 rounded-full`, // Bullet
@@ -189,7 +198,7 @@ func TestSkeleton(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := test.skeleton.String()
+			result := renderToString(test.skeleton)
 			for _, expected := range test.contains {
 				if !strings.Contains(result, expected) {
 					t.Errorf("expected result to contain %q, but it didn't.\nGot: %s", expected, result)

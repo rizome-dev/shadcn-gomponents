@@ -35,11 +35,26 @@ type ContentProps struct {
 func New(props Props, children ...g.Node) g.Node {
 	classes := lib.CN("relative inline-block", props.Class)
 	
+	// Separate trigger from content
+	var trigger g.Node
+	var content g.Node
+	
+	for _, child := range children {
+		// This is a simplified check - in a real implementation, 
+		// we'd need a more robust way to identify components
+		if trigger == nil {
+			trigger = child
+		} else if content == nil {
+			content = child
+		}
+	}
+	
 	return html.Div(
 		html.Class(classes),
 		g.If(props.Open, g.Attr("data-state", "open")),
 		g.If(!props.Open, g.Attr("data-state", "closed")),
-		g.Group(children),
+		trigger,
+		g.If(props.Open, content),
 	)
 }
 
@@ -89,7 +104,6 @@ func ContentComponent(props ContentProps, children ...g.Node) g.Node {
 	return html.Div(
 		html.Class(classes),
 		html.Role("dialog"),
-		g.Attr("data-state", "open"),
 		g.If(props.Side != "", g.Attr("data-side", props.Side)),
 		g.If(props.Align != "", g.Attr("data-align", props.Align)),
 		g.Group(children),

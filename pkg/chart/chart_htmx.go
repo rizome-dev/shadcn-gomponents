@@ -3,6 +3,7 @@ package chart
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"strings"
 
 	g "maragu.dev/gomponents"
@@ -548,17 +549,11 @@ func createPieSlice(center, radius, innerRadius int, startAngle, angle float64, 
 
 // Simple trigonometry helpers
 func sine(rad float64) float64 {
-	// Using math package would be better, but for a simple implementation:
-	// This is a rough approximation using Taylor series
-	x := rad
-	x3 := x * x * x
-	x5 := x3 * x * x
-	return x - x3/6 + x5/120
+	return math.Sin(rad)
 }
 
 func cosine(rad float64) float64 {
-	// cos(x) = sin(x + π/2)
-	return sine(rad + 3.14159/2)
+	return math.Cos(rad)
 }
 
 // ChartResponse generates a chart update response

@@ -793,4 +793,3 @@ func createStaticPieSlice(center, radius, innerRadius int, startAngle, angle flo
 		html.Class("hover:opacity-80 transition-opacity cursor-pointer"),
 	)
 }
-

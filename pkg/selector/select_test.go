@@ -7,6 +7,15 @@ import (
 	"github.com/rizome-dev/shadcn-gomponents/pkg/selector"
 )
 
+func renderToString(node g.Node) string {
+	var buf strings.Builder
+	err := node.Render(&buf)
+	if err != nil {
+		panic(err) // For tests, panic on render error
+	}
+	return buf.String()
+}
+
 func TestSelect(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -17,7 +26,7 @@ func TestSelect(t *testing.T) {
 			name: "basic select",
 			sel: selector.New(selector.Props{
 				Name: "country",
-				Options: []selector.Option{
+				Options: []selector.OptionType{
 					{Value: "us", Label: "United States"},
 					{Value: "uk", Label: "United Kingdom"},
 					{Value: "ca", Label: "Canada"},
@@ -36,7 +45,7 @@ func TestSelect(t *testing.T) {
 			name: "select with value",
 			sel: selector.Simple(
 				"size",
-				[]selector.Option{
+				[]selector.OptionType{
 					{Value: "sm", Label: "Small"},
 					{Value: "md", Label: "Medium"},
 					{Value: "lg", Label: "Large"},
@@ -53,13 +62,13 @@ func TestSelect(t *testing.T) {
 			sel: selector.WithPlaceholder(
 				"category",
 				"Choose a category",
-				[]selector.Option{
+				[]selector.OptionType{
 					{Value: "electronics", Label: "Electronics"},
 					{Value: "clothing", Label: "Clothing"},
 				},
 			),
 			contains: []string{
-				`<option value="" selected disabled hidden>Choose a category</option>`,
+				`<option value="" selected disabled hidden="">Choose a category</option>`,
 				`value="electronics"`,
 				`value="clothing"`,
 			},
@@ -71,14 +80,14 @@ func TestSelect(t *testing.T) {
 				[]selector.Group{
 					{
 						Label: "North America",
-						Options: []selector.Option{
+						Options: []selector.OptionType{
 							{Value: "pst", Label: "Pacific Time"},
 							{Value: "est", Label: "Eastern Time"},
 						},
 					},
 					{
 						Label: "Europe",
-						Options: []selector.Option{
+						Options: []selector.OptionType{
 							{Value: "gmt", Label: "GMT"},
 							{Value: "cet", Label: "Central European Time"},
 						},
@@ -98,7 +107,7 @@ func TestSelect(t *testing.T) {
 			sel: selector.New(selector.Props{
 				Name:     "disabled-select",
 				Disabled: true,
-				Options: []selector.Option{
+				Options: []selector.OptionType{
 					{Value: "opt1", Label: "Option 1"},
 				},
 			}),
@@ -115,7 +124,7 @@ func TestSelect(t *testing.T) {
 				Value:    "b",
 				Required: true,
 				OnChange: "handleChange(this)",
-				Options: []selector.Option{
+				Options: []selector.OptionType{
 					{Value: "a", Label: "Option A"},
 					{Value: "b", Label: "Option B"},
 					{Value: "c", Label: "Option C", Disabled: true},
@@ -136,7 +145,7 @@ func TestSelect(t *testing.T) {
 			sel: selector.FormField(
 				selector.Props{
 					Name: "department",
-					Options: []selector.Option{
+					Options: []selector.OptionType{
 						{Value: "eng", Label: "Engineering"},
 						{Value: "sales", Label: "Sales"},
 						{Value: "hr", Label: "Human Resources"},
@@ -157,7 +166,7 @@ func TestSelect(t *testing.T) {
 			sel: selector.New(selector.Props{
 				Name:     "skills",
 				Multiple: true,
-				Options: []selector.Option{
+				Options: []selector.OptionType{
 					{Value: "js", Label: "JavaScript"},
 					{Value: "go", Label: "Go"},
 					{Value: "py", Label: "Python"},
@@ -172,7 +181,7 @@ func TestSelect(t *testing.T) {
 			sel: selector.New(selector.Props{
 				Name: "small",
 				Size: "sm",
-				Options: []selector.Option{
+				Options: []selector.OptionType{
 					{Value: "1", Label: "One"},
 				},
 			}),
@@ -185,7 +194,7 @@ func TestSelect(t *testing.T) {
 			sel: selector.New(selector.Props{
 				Name: "large",
 				Size: "lg",
-				Options: []selector.Option{
+				Options: []selector.OptionType{
 					{Value: "1", Label: "One"},
 				},
 			}),
@@ -199,7 +208,7 @@ func TestSelect(t *testing.T) {
 				Name:        "custom",
 				Placeholder: "Select an option",
 				Value:       "opt2",
-				Options: []selector.Option{
+				Options: []selector.OptionType{
 					{Value: "opt1", Label: "First Option"},
 					{Value: "opt2", Label: "Second Option"},
 				},
@@ -215,7 +224,7 @@ func TestSelect(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := test.sel.String()
+			result := renderToString(test.sel)
 			for _, expected := range test.contains {
 				if !strings.Contains(result, expected) {
 					t.Errorf("expected result to contain %q, but it didn't.\nGot: %s", expected, result)

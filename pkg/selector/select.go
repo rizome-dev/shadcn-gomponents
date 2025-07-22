@@ -125,17 +125,18 @@ func New(props Props) g.Node {
 func renderOption(opt OptionType, selectedValue string) g.Node {
 	attrs := []g.Node{
 		html.Value(opt.Value),
-		g.Text(opt.Label),
-	}
-	
-	if opt.Disabled {
-		attrs = append([]g.Node{html.Disabled()}, attrs...)
 	}
 	
 	// Check if this option should be selected
 	if opt.Selected || (selectedValue != "" && opt.Value == selectedValue) {
-		attrs = append([]g.Node{html.Selected()}, attrs...)
+		attrs = append(attrs, html.Selected())
 	}
+	
+	if opt.Disabled {
+		attrs = append(attrs, html.Disabled())
+	}
+	
+	attrs = append(attrs, g.Text(opt.Label))
 	
 	return html.Option(attrs...)
 }

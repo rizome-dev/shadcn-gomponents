@@ -335,7 +335,7 @@ func ContextMenuHandlers(mux *http.ServeMux) {
 			ItemHTMX(ItemProps{}, htmxProps, "back", g.Text("Back")),
 			ItemHTMX(ItemProps{Disabled: true}, htmxProps, "forward", g.Text("Forward")),
 			ItemHTMX(ItemProps{}, htmxProps, "reload", g.Text("Reload")),
-			Sub(SubProps{},
+			SubMenu(SubProps{},
 				SubTriggerHTMX(SubTriggerProps{}, htmxProps, "more-tools", g.Text("More Tools")),
 				SubContent(SubContentProps{},
 					ItemHTMX(ItemProps{}, htmxProps, "save-page", 

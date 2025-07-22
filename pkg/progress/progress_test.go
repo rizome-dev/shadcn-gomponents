@@ -24,7 +24,7 @@ func TestProgress(t *testing.T) {
 				`aria-valuenow="50"`,
 				`aria-label="Progress: 50%"`,
 				`data-value="50"`,
-				`transform: translateX(-50%)`,
+				`width: 50%`,
 				`class="relative w-full overflow-hidden rounded-full bg-secondary h-4"`,
 			},
 		},
@@ -33,7 +33,7 @@ func TestProgress(t *testing.T) {
 			progress: progress.Default(0),
 			contains: []string{
 				`aria-valuenow="0"`,
-				`transform: translateX(-100%)`,
+				`width: 0%`,
 			},
 		},
 		{
@@ -41,7 +41,7 @@ func TestProgress(t *testing.T) {
 			progress: progress.Default(100),
 			contains: []string{
 				`aria-valuenow="100"`,
-				`transform: translateX(0%)`,
+				`width: 100%`,
 			},
 		},
 		{
@@ -49,7 +49,7 @@ func TestProgress(t *testing.T) {
 			progress: progress.SmallComponent(75),
 			contains: []string{
 				`h-2`,
-				`transform: translateX(-25%)`,
+				`width: 75%`,
 			},
 		},
 		{
@@ -57,7 +57,7 @@ func TestProgress(t *testing.T) {
 			progress: progress.Large(25),
 			contains: []string{
 				`h-6`,
-				`transform: translateX(-75%)`,
+				`width: 25%`,
 			},
 		},
 		{
@@ -70,7 +70,7 @@ func TestProgress(t *testing.T) {
 				`aria-valuemax="50"`,
 				`aria-valuenow="25"`,
 				`aria-label="Progress: 50%"`, // 25/50 = 50%
-				`transform: translateX(-50%)`,
+				`width: 50%`,
 			},
 		},
 		{
@@ -98,7 +98,7 @@ func TestProgress(t *testing.T) {
 				`background-image: linear-gradient`,
 				`45deg`,
 				`background-size: 1rem 1rem`,
-				`transform: translateX(-60%)`,
+				`width: 40%`,
 			},
 		},
 		{
@@ -159,7 +159,7 @@ func TestProgress(t *testing.T) {
 			}),
 			contains: []string{
 				`aria-valuenow="100"`, // Clamped to max
-				`transform: translateX(0%)`,
+				`width: 100%`,
 			},
 		},
 		{
@@ -169,7 +169,7 @@ func TestProgress(t *testing.T) {
 			}),
 			contains: []string{
 				`aria-valuenow="0"`, // Clamped to 0
-				`transform: translateX(-100%)`,
+				`width: 0%`,
 			},
 		},
 	}

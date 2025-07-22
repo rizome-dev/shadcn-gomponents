@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	g "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 )
 
 func renderToString(node g.Node) string {

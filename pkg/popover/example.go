@@ -15,7 +15,7 @@ func Example() g.Node {
 		html.Div(
 			html.H3(html.Class("text-lg font-semibold mb-4"), g.Text("Basic Popover")),
 			New(
-				Props{Open: true},
+				Props{},
 				Trigger(TriggerProps{}, g.Text("Open popover")),
 	ContentComponent(
 					ContentProps{},
@@ -131,7 +131,7 @@ func Example() g.Node {
 		html.Div(
 			html.H3(html.Class("text-lg font-semibold mb-4"), g.Text("Popover with Close Button")),
 			New(
-				Props{Open: true},
+				Props{},
 				Trigger(TriggerProps{}, g.Text("With Close")),
 	ContentComponent(
 					ContentProps{},

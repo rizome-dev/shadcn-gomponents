@@ -7,6 +7,15 @@ import (
 	"github.com/rizome-dev/shadcn-gomponents/pkg/radio"
 )
 
+func renderToString(node g.Node) string {
+	var buf strings.Builder
+	err := node.Render(&buf)
+	if err != nil {
+		panic(err) // For tests, panic on render error
+	}
+	return buf.String()
+}
+
 func TestRadioGroup(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -194,7 +203,7 @@ func TestRadioGroup(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := test.radio.String()
+			result := renderToString(test.radio)
 			for _, expected := range test.contains {
 				if !strings.Contains(result, expected) {
 					t.Errorf("expected result to contain %q, but it didn't.\nGot: %s", expected, result)
