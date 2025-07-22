@@ -205,6 +205,14 @@ var globalToastStore = &ToastStore{
 
 // ToastHandlers creates HTTP handlers for toast functionality
 func ToastHandlers(mux *http.ServeMux, htmxProps HTMXProps) {
+	// Validate required paths
+	if htmxProps.ShowPath == "" {
+		panic("ToastHandlers: ShowPath is required")
+	}
+	if htmxProps.DismissPath == "" {
+		panic("ToastHandlers: DismissPath is required")
+	}
+	
 	// Show toast handler
 	mux.HandleFunc(htmxProps.ShowPath, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet && r.Method != http.MethodPost {

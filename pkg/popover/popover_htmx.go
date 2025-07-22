@@ -239,6 +239,82 @@ func ProfilePopoverHTMX(htmxProps HTMXProps, userName, userEmail string, avatarU
 
 // PopoverHandlers creates HTTP handlers for popover components
 func PopoverHandlers(mux *http.ServeMux) {
+	// Demo popover handlers
+	demoProps := HTMXProps{
+		ID:         "demo-popover-htmx",
+		TogglePath: "/htmx/popover/demo/toggle",
+		ClosePath:  "/htmx/popover/demo/close",
+	}
+	
+	mux.HandleFunc("/htmx/popover/demo/toggle", func(w http.ResponseWriter, r *http.Request) {
+		trigger := TriggerHTMX(
+			TriggerProps{Class: "bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"},
+			demoProps,
+			g.Text("Open HTMX Popover"),
+		)
+		
+		content := html.Div(
+			html.Class("space-y-4"),
+			html.H3(html.Class("font-medium"), g.Text("HTMX Popover Demo")),
+			html.P(html.Class("text-sm text-muted-foreground"), 
+				g.Text("This popover was loaded dynamically with HTMX!")),
+			html.Div(html.Class("flex gap-2"),
+				html.Button(
+					html.Type("button"),
+					html.Class("text-sm bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 rounded"),
+					g.Text("Action"),
+					hx.Post("/htmx/popover/demo/action"),
+					hx.Target("#demo-popover-htmx-container"),
+					hx.Swap("outerHTML"),
+				),
+				html.Button(
+					html.Type("button"),
+					html.Class("text-sm border hover:bg-accent px-3 py-1 rounded"),
+					g.Text("Close"),
+					hx.Get(demoProps.ClosePath),
+					hx.Target("#demo-popover-htmx-container"),
+					hx.Swap("outerHTML"),
+				),
+			),
+		)
+		
+		node := RenderOpenPopover(
+			Props{},
+			ContentProps{},
+			demoProps,
+			trigger,
+			content,
+		)
+		node.Render(w)
+	})
+	
+	mux.HandleFunc("/htmx/popover/demo/close", func(w http.ResponseWriter, r *http.Request) {
+		trigger := TriggerHTMX(
+			TriggerProps{Class: "bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"},
+			demoProps,
+			g.Text("Open HTMX Popover"),
+		)
+		
+		node := RenderClosedPopover(Props{}, demoProps, trigger)
+		node.Render(w)
+	})
+	
+	mux.HandleFunc("/htmx/popover/demo/action", func(w http.ResponseWriter, r *http.Request) {
+		// Return a success message
+		node := html.Div(
+			html.ID("demo-popover-htmx-container"),
+			html.Class("inline-block"),
+			html.Div(
+				html.Class("bg-green-500 text-white px-4 py-2 rounded-md shadow-lg"),
+				g.Text("✓ Action completed!"),
+				// Auto-hide after 2 seconds
+				g.Attr("x-data", "{}"),
+				g.Attr("x-init", "setTimeout(() => { htmx.ajax('GET', '/htmx/popover/demo/close', {target: '#demo-popover-htmx-container', swap: 'outerHTML'}); }, 2000)"),
+			),
+		)
+		node.Render(w)
+	})
+	
 	// Basic popover example
 	basicProps := HTMXProps{
 		ID:         "popover-basic",

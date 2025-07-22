@@ -217,6 +217,14 @@ var sidebarStates = make(map[string]bool)
 
 // SidebarHandlers creates HTTP handlers for sidebar functionality
 func SidebarHandlers(mux *http.ServeMux, baseProps Props, htmxProps HTMXProps) {
+	// Validate required paths
+	if htmxProps.TogglePath == "" {
+		panic("SidebarHandlers: TogglePath is required")
+	}
+	if htmxProps.StatePath == "" {
+		panic("SidebarHandlers: StatePath is required")
+	}
+
 	// Initialize state
 	if _, exists := sidebarStates[htmxProps.ID]; !exists {
 		sidebarStates[htmxProps.ID] = htmxProps.DefaultOpen

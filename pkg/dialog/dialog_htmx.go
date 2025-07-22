@@ -338,6 +338,72 @@ func RenderSearchDialog(htmxProps HTMXProps) g.Node {
 
 // DialogHandlers creates HTTP handlers for dialog components
 func DialogHandlers(mux *http.ServeMux) {
+	// Demo dialog handlers
+	demoProps := HTMXProps{
+		ID:          "demo-dialog-htmx",
+		TriggerPath: "/htmx/dialog/demo/open",
+		ClosePath:   "/htmx/dialog/demo/close",
+	}
+	
+	mux.HandleFunc("/htmx/dialog/demo/open", func(w http.ResponseWriter, r *http.Request) {
+		node := NewHTMX(
+			Props{Open: true},
+			demoProps,
+			OverlayHTMX(demoProps),
+			DialogContentHTMX(
+				ContentProps{ShowCloseButton: true},
+				demoProps,
+				DialogHeader(
+					HeaderProps{},
+					DialogTitle(TitleProps{}, "HTMX Dialog Demo"),
+					Description(DescriptionProps{}, "This dialog was loaded dynamically with HTMX!"),
+				),
+				html.Div(html.Class("grid gap-4 py-4"),
+					html.P(html.Class("text-sm"), g.Text("Notice how this dialog opened without a full page refresh. The content was loaded from the server using HTMX.")),
+					html.Div(html.Class("grid grid-cols-4 items-center gap-4"),
+						html.Label(html.For("demo-name"), html.Class("text-right"), g.Text("Name")),
+						html.Input(html.ID("demo-name"), html.Value("HTMX User"), html.Class("col-span-3")),
+					),
+				),
+				DialogFooter(
+					FooterProps{},
+					CloseHTMX(
+						CloseProps{Class: "border hover:bg-accent"},
+						demoProps,
+						g.Text("Cancel"),
+					),
+					html.Button(
+						html.Type("button"),
+						html.Class("bg-primary text-primary-foreground hover:bg-primary/90"),
+						g.Text("Save changes"),
+						hx.Post("/htmx/dialog/demo/save"),
+						html.Target("#demo-dialog-htmx"),
+						hx.Swap("outerHTML"),
+					),
+				),
+			),
+		)
+		node.Render(w)
+	})
+	
+	mux.HandleFunc("/htmx/dialog/demo/close", func(w http.ResponseWriter, r *http.Request) {
+		node := RenderClosedDialog(demoProps)
+		node.Render(w)
+	})
+	
+	mux.HandleFunc("/htmx/dialog/demo/save", func(w http.ResponseWriter, r *http.Request) {
+		// Return success message
+		node := html.Div(
+			html.ID(demoProps.ID),
+			html.Class("fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg"),
+			g.Text("✓ Changes saved successfully!"),
+			// Auto-hide after 3 seconds
+			g.Attr("x-data", "{}"),
+			g.Attr("x-init", "setTimeout(() => $el.remove(), 3000)"),
+		)
+		node.Render(w)
+	})
+	
 	// Basic dialog handlers
 	htmxProps := HTMXProps{
 		ID:          "dialog-example",
@@ -524,4 +590,68 @@ func DialogHandlers(mux *http.ServeMux) {
 		)
 		node.Render(w)
 	})
+}
+
+// ExampleWithHTMX creates a dialog example with HTMX demo
+func ExampleWithHTMX() g.Node {
+	return html.Div(
+		html.Class("space-y-8"),
+		
+		// HTMX Interactive Demo
+		html.Div(
+			html.Class("space-y-4 border-2 border-primary/20 rounded-lg p-6 bg-muted/50"),
+			html.H2(html.Class("text-2xl font-bold mb-4"), g.Text("✨ HTMX Interactive Demo")),
+			html.P(html.Class("text-muted-foreground mb-6"), 
+				g.Text("Click the button to open an interactive dialog using HTMX")),
+			
+			// HTMX Dialog Trigger
+			TriggerHTMX(
+				TriggerProps{Class: "bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"},
+				HTMXProps{
+					ID:          "demo-dialog-htmx",
+					TriggerPath: "/htmx/dialog/demo/open",
+				},
+				g.Text("Open HTMX Dialog"),
+			),
+			
+			// Placeholder for dialog
+			html.Div(html.ID("demo-dialog-htmx")),
+		),
+		
+		// Static Example
+		html.Div(
+			html.Class("space-y-4"),
+			html.H3(html.Class("text-lg font-semibold"), g.Text("Static Dialog Preview")),
+			html.P(html.Class("text-muted-foreground mb-4"), 
+				g.Text("This is a static preview of the dialog component")),
+			
+			html.Div(
+				html.Class("relative bg-background/50 rounded-lg p-8 border"),
+				html.Div(html.Class("relative scale-90"),
+					DialogContent(
+						ContentProps{ShowCloseButton: true},
+						DialogHeader(
+							HeaderProps{},
+							DialogTitle(TitleProps{}, "Edit Profile"),
+							Description(DescriptionProps{}, "Make changes to your profile here. Click save when you're done."),
+						),
+						html.Div(html.Class("grid gap-4 py-4"),
+							html.Div(html.Class("grid grid-cols-4 items-center gap-4"),
+								html.Label(html.For("name"), html.Class("text-right"), g.Text("Name")),
+								html.Input(html.ID("name"), html.Value("Pedro Duarte"), html.Class("col-span-3")),
+							),
+							html.Div(html.Class("grid grid-cols-4 items-center gap-4"),
+								html.Label(html.For("username"), html.Class("text-right"), g.Text("Username")),
+								html.Input(html.ID("username"), html.Value("@peduarte"), html.Class("col-span-3")),
+							),
+						),
+						DialogFooter(
+							FooterProps{},
+							html.Button(html.Type("submit"), html.Class("bg-primary text-primary-foreground hover:bg-primary/90"), g.Text("Save changes")),
+						),
+					),
+				),
+			),
+		),
+	)
 }

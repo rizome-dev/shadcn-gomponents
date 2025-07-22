@@ -216,6 +216,17 @@ var sliderStates = make(map[string]*SliderState)
 
 // SliderHandlers creates HTTP handlers for slider functionality
 func SliderHandlers(mux *http.ServeMux, baseProps Props, htmxProps HTMXProps) {
+	// Validate required paths
+	if htmxProps.InitPath == "" {
+		panic("SliderHandlers: InitPath is required")
+	}
+	if htmxProps.UpdatePath == "" {
+		panic("SliderHandlers: UpdatePath is required")
+	}
+	if htmxProps.DragPath == "" {
+		panic("SliderHandlers: DragPath is required")
+	}
+
 	// Initialize state
 	if _, exists := sliderStates[htmxProps.ID]; !exists {
 		sliderStates[htmxProps.ID] = &SliderState{

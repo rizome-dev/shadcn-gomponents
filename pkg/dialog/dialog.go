@@ -182,32 +182,7 @@ func Close(props CloseProps, children ...g.Node) g.Node {
 
 // Example creates a basic dialog example
 func Example() g.Node {
-	return New(
-		Props{Open: true},
-		Overlay(),
-		DialogContent(
-			ContentProps{ShowCloseButton: true},
-			DialogHeader(
-				HeaderProps{},
-				DialogTitle(TitleProps{}, "Edit Profile"),
-				Description(DescriptionProps{}, "Make changes to your profile here. Click save when you're done."),
-			),
-			html.Div(html.Class("grid gap-4 py-4"),
-				html.Div(html.Class("grid grid-cols-4 items-center gap-4"),
-					html.Label(html.For("name"), html.Class("text-right"), g.Text("Name")),
-					html.Input(html.ID("name"), html.Value("Pedro Duarte"), html.Class("col-span-3")),
-				),
-				html.Div(html.Class("grid grid-cols-4 items-center gap-4"),
-					html.Label(html.For("username"), html.Class("text-right"), g.Text("Username")),
-					html.Input(html.ID("username"), html.Value("@peduarte"), html.Class("col-span-3")),
-				),
-			),
-			DialogFooter(
-				FooterProps{},
-				html.Button(html.Type("submit"), html.Class("bg-primary text-primary-foreground hover:bg-primary/90"), g.Text("Save changes")),
-			),
-		),
-	)
+	return ExampleWithHTMX()
 }
 
 // ExampleScrollable creates a scrollable dialog example

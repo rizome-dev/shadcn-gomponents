@@ -141,6 +141,14 @@ var toggleGroupStates = make(map[string]*ToggleGroupState)
 
 // ToggleGroupHandlers creates HTTP handlers for toggle group functionality
 func ToggleGroupHandlers(mux *http.ServeMux, baseProps Props, htmxProps HTMXProps) {
+	// Validate required paths
+	if htmxProps.LoadPath == "" {
+		panic("ToggleGroupHandlers: LoadPath is required")
+	}
+	if htmxProps.TogglePath == "" {
+		panic("ToggleGroupHandlers: TogglePath is required")
+	}
+	
 	// Initialize state
 	if _, exists := toggleGroupStates[htmxProps.ID]; !exists {
 		toggleGroupStates[htmxProps.ID] = &ToggleGroupState{

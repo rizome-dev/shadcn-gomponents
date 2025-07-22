@@ -131,6 +131,17 @@ func InitializeTable(id string, headers []string, rows []map[string]interface{})
 
 // TableHandlers creates HTTP handlers for table functionality
 func TableHandlers(mux *http.ServeMux, htmxProps HTMXProps) {
+	// Validate required paths
+	if htmxProps.LoadPath == "" {
+		panic("TableHandlers: LoadPath is required")
+	}
+	if htmxProps.SortPath == "" {
+		panic("TableHandlers: SortPath is required")
+	}
+	if htmxProps.SelectPath == "" {
+		panic("TableHandlers: SelectPath is required")
+	}
+	
 	// Load handler
 	mux.HandleFunc(htmxProps.LoadPath, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {

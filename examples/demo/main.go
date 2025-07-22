@@ -217,10 +217,114 @@ func main() {
 	fs := http.FileServer(http.Dir("../../public"))
 	mux.Handle("/public/", http.StripPrefix("/public/", fs))
 
+	// Register HTMX handlers for components
+	registerHTMXHandlers(mux)
+
 	// Start server
 	fmt.Println("Demo app running at http://localhost:8080")
 	fmt.Println("View all components at http://localhost:8080/components/")
 	log.Fatal(http.ListenAndServe(":8080", mux))
+}
+
+// registerHTMXHandlers registers all HTMX endpoints for interactive components
+func registerHTMXHandlers(mux *http.ServeMux) {
+	// NOTE: Some components (alertdialog, carousel, chart, inputotp, menubar, navigationmenu)
+	// don't have handler registration functions yet
+
+	// Calendar handlers
+	calendar.CalendarHandlers(mux)
+
+	// Collapsible handlers
+	collapsible.CollapsibleHandlers(mux)
+
+	// Command handlers
+	command.CommandHandlers(mux)
+
+	// Context Menu handlers
+	contextmenu.ContextMenuHandlers(mux)
+
+	// Dialog handlers
+	dialog.DialogHandlers(mux)
+
+	// Drawer handlers
+	drawer.DrawerHandlers(mux)
+
+	// Dropdown Menu handlers
+	dropdownmenu.DropdownMenuHandlers(mux)
+
+	// Hover Card handlers
+	hovercard.HoverCardHandlers(mux)
+
+	// Popover handlers
+	popover.PopoverHandlers(mux)
+
+	// Sheet handlers
+	sheet.SheetHandlers(mux)
+
+	// Sidebar handlers
+	sidebar.SidebarHandlers(mux, sidebar.Props{
+		Side: "left",
+		Open: true,
+	}, sidebar.HTMXProps{
+		ID:         "demo-sidebar",
+		TogglePath: "/htmx/sidebar/toggle",
+		StatePath:  "/htmx/sidebar/state",
+	})
+
+	// Slider handlers
+	slider.SliderHandlers(mux, slider.Props{
+		Min:  0,
+		Max:  100,
+		Step: 1,
+		Value: []int{50},
+	}, slider.HTMXProps{
+		ID:         "demo-slider",
+		UpdatePath: "/htmx/slider/update",
+		DragPath:   "/htmx/slider/drag",
+		InitPath:   "/htmx/slider/init",
+	})
+
+	// Sonner (toast) handlers
+	sonner.ToasterHandlers(mux, sonner.ToasterProps{
+		Position: sonner.PositionBottomRight,
+	}, sonner.HTMXToasterProps{
+		ID:         "demo-sonner",
+		AddPath:    "/htmx/sonner/add",
+		RemovePath: "/htmx/sonner/remove",
+		UpdatePath: "/htmx/sonner/update",
+	})
+
+	// Table handlers
+	table.TableHandlers(mux, table.HTMXProps{
+		ID:           "demo-table",
+		LoadPath:     "/htmx/table/load",
+		SortPath:     "/htmx/table/sort",
+		SelectPath:   "/htmx/table/select",
+		FilterPath:   "/htmx/table/filter",
+		PaginatePath: "/htmx/table/page",
+	})
+
+	// Toast handlers
+	toast.ToastHandlers(mux, toast.HTMXProps{
+		ToasterID:   "demo-toast",
+		ShowPath:    "/htmx/toast/show",
+		DismissPath: "/htmx/toast/dismiss",
+	})
+
+	// Toggle Group handlers
+	togglegroup.ToggleGroupHandlers(mux, togglegroup.Props{
+		Type: "single",
+	}, togglegroup.HTMXProps{
+		ID:         "demo-toggle-group",
+		TogglePath: "/htmx/toggle-group/toggle",
+		LoadPath:   "/htmx/toggle-group/load",
+	})
+
+	// Tooltip handlers
+	tooltip.TooltipHandlers(mux, tooltip.Props{}, tooltip.HTMXProps{
+		ID:       "demo-tooltip",
+		ShowPath: "/htmx/tooltip/show",
+	})
 }
 
 // BasePage creates the base HTML structure

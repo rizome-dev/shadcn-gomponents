@@ -186,6 +186,17 @@ func (s *ToastStore) GetToasts(toasterID string) []ToastProps {
 
 // ToasterHandlers creates HTTP handlers for toaster functionality
 func ToasterHandlers(mux *http.ServeMux, baseProps ToasterProps, htmxProps HTMXToasterProps) {
+	// Validate required paths
+	if htmxProps.AddPath == "" {
+		panic("ToasterHandlers: AddPath is required")
+	}
+	if htmxProps.RemovePath == "" {
+		panic("ToasterHandlers: RemovePath is required")
+	}
+	if htmxProps.UpdatePath == "" {
+		panic("ToasterHandlers: UpdatePath is required")
+	}
+
 	// Add toast handler
 	mux.HandleFunc(htmxProps.AddPath, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {

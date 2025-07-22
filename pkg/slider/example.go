@@ -10,6 +10,47 @@ func Examples() g.Node {
 	return html.Div(
 		html.Class("space-y-8 p-8"),
 		
+		// HTMX Interactive Demo
+		html.Div(
+			html.Class("space-y-4 border-2 border-primary/20 rounded-lg p-6 bg-muted/50"),
+			html.H2(html.Class("text-2xl font-bold mb-4"), g.Text("✨ HTMX Interactive Demo")),
+			html.P(html.Class("text-muted-foreground mb-6"), 
+				g.Text("This interactive slider uses HTMX for real-time updates without page refresh")),
+			
+			// HTMX Slider with Value Display
+			html.Div(
+				html.Class("space-y-4 max-w-md"),
+				HTMXSliderWithValue(Props{
+					Min:   0,
+					Max:   100,
+					Step:  1,
+					Value: []int{50},
+				}, HTMXProps{
+					ID:         "demo-htmx-slider",
+					UpdatePath: "/htmx/slider/update",
+					DragPath:   "/htmx/slider/drag",
+					InitPath:   "/htmx/slider/init",
+				}),
+				
+				// Range slider with HTMX
+				html.Div(
+					html.Class("mt-6"),
+					html.H4(html.Class("text-sm font-medium mb-2"), g.Text("Range Slider with HTMX")),
+					HTMXSliderWithValue(Props{
+						Min:   0,
+						Max:   100,
+						Step:  5,
+						Value: []int{25, 75},
+					}, HTMXProps{
+						ID:         "demo-htmx-range",
+						UpdatePath: "/htmx/slider-range/update",
+						DragPath:   "/htmx/slider-range/drag",
+						InitPath:   "/htmx/slider-range/init",
+					}),
+				),
+			),
+		),
+		
 		// Basic Slider
 		html.Div(
 			html.Class("space-y-4"),

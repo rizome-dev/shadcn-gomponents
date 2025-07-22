@@ -151,6 +151,11 @@ func HTMXTrigger(htmxProps HTMXProps, children ...g.Node) g.Node {
 
 // TooltipHandlers creates HTTP handlers for tooltip functionality
 func TooltipHandlers(mux *http.ServeMux, baseProps Props, htmxProps HTMXProps) {
+	// Validate required paths
+	if htmxProps.ShowPath == "" && htmxProps.HidePath == "" {
+		panic("TooltipHandlers: At least one of ShowPath or HidePath is required")
+	}
+
 	// Handler to show tooltip content
 	if htmxProps.ShowPath != "" {
 		mux.HandleFunc(htmxProps.ShowPath, func(w http.ResponseWriter, r *http.Request) {

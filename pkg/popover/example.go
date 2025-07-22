@@ -11,6 +11,28 @@ func Example() g.Node {
 	return html.Div(
 		html.Class("space-y-8 p-8"),
 		
+		// HTMX Interactive Demo
+		html.Div(
+			html.Class("space-y-4 border-2 border-primary/20 rounded-lg p-6 bg-muted/50"),
+			html.H2(html.Class("text-2xl font-bold mb-4"), g.Text("✨ HTMX Interactive Demo")),
+			html.P(html.Class("text-muted-foreground mb-6"), 
+				g.Text("Click the button to open an interactive popover using HTMX")),
+			
+			// HTMX Popover
+			html.Div(
+				html.ID("demo-popover-htmx-container"),
+				TriggerHTMX(
+					TriggerProps{Class: "bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"},
+					HTMXProps{
+						ID:         "demo-popover-htmx",
+						TogglePath: "/htmx/popover/demo/toggle",
+						ClosePath:  "/htmx/popover/demo/close",
+					},
+					g.Text("Open HTMX Popover"),
+				),
+			),
+		),
+		
 		// Basic popover
 		html.Div(
 			html.H3(html.Class("text-lg font-semibold mb-4"), g.Text("Basic Popover")),
